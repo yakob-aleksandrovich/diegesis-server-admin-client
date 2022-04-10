@@ -1,5 +1,10 @@
 import React, {useState} from 'react';
 import {
+    ApolloClient,
+    ApolloProvider,
+    InMemoryCache,
+} from "@apollo/client";
+import {
     Box,
     Container,
     CssBaseline,
@@ -18,7 +23,12 @@ function App() {
         'Vachan',
     ];
 
-    return (<>
+    const client = new ApolloClient({
+        uri: 'http://localhost:1234/graphql',
+        cache: new InMemoryCache(),
+    });
+
+    return (<ApolloProvider client={client}>
             <CssBaseline/>
             <Container fixed className="App">
                 <Header orgs={orgs} selectedOrgIndex={selectedOrgIndex} setSelectedOrgIndex={setSelectedOrgIndex} />
@@ -26,7 +36,7 @@ function App() {
                      <TabbedBody selectedOrg={orgs[selectedOrgIndex]} />
                 </Box>
             </Container>
-        </>
+        </ApolloProvider>
     );
 }
 
