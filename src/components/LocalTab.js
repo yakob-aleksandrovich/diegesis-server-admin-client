@@ -4,12 +4,19 @@ import TranslationsTable from "./TranslationsTable";
 import {gql, useQuery} from "@apollo/client";
 import {Box, Paper, Typography} from "@mui/material";
 
-export default function LocalTab({selectedOrg}) {
+export default function LocalTab({selectedOrg, searchLang, searchText}) {
+
+    function searchClause(searchLang, searchText) {
+        return `(
+        ${searchLang.trim().length > 0 ? `withLanguageCode: "${searchLang.trim()}"` : ''}
+        ${searchText.trim().length > 0 ? `withMatchingMetadata: "${searchText.trim()}"` : ''}
+        )`;
+    }
 
     const queryString = `query localTranslations {
         org(name: "%org%") {
             id: name
-            localTranslations {
+            localTranslations%searchClause% {
                 id
                 languageCode
                 title
@@ -19,7 +26,13 @@ export default function LocalTab({selectedOrg}) {
                 hasVrs
             }
         }
-    }`.replace('%org%', selectedOrg);
+    }`.replace('%org%', selectedOrg)
+        .replace(
+            '%searchClause%',
+            searchText.trim().length > 0 || searchLang.trim().length > 0 ?
+                searchClause(searchLang, searchText) :
+                ''
+        );
 
     const {loading, error, data} = useQuery(
         gql`${queryString}`,
@@ -87,7 +100,7 @@ export default function LocalTab({selectedOrg}) {
         return <Paper sx={{width: '100%', overflow: 'hidden'}}>
             <Box>
                 <Typography variant="h3">GraphQL Error</Typography>
-                <Typography>{error}</Typography>
+                <Typography>{JSON.stringify(error)}</Typography>
             </Box>
         </Paper>
     }

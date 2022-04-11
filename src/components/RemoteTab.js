@@ -65,9 +65,7 @@ export default function RemoteTab({selectedOrg}) {
         }`.replace('%org%', org)
             .replace('%transId%', transId)
             .replace('%contentType%', org === 'DBL' ? 'Usx' : 'Usfm');
-        setIsLoading(true);
         const result = await client.mutate({mutation: gql`${mutationString}`});
-        setIsLoading(false);
         console.log(result.data);
     }
 

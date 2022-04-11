@@ -15,6 +15,8 @@ import './App.css';
 
 function App() {
     const [selectedOrgIndex, setSelectedOrgIndex] = useState(0);
+    const [searchLang, setSearchLang] = useState('');
+    const [searchText, setSearchText] = useState('');
 
     const orgs = [
         'DBL',
@@ -31,9 +33,21 @@ function App() {
     return (<ApolloProvider client={client}>
             <CssBaseline/>
             <Container fixed className="App">
-                <Header orgs={orgs} selectedOrgIndex={selectedOrgIndex} setSelectedOrgIndex={setSelectedOrgIndex} />
+                <Header
+                    orgs={orgs}
+                    selectedOrgIndex={selectedOrgIndex}
+                    setSelectedOrgIndex={setSelectedOrgIndex}
+                    searchLang={searchLang}
+                    setSearchLang={setSearchLang}
+                    searchText={searchText}
+                    setSearchText={setSearchText}
+                />
                  <Box id="body">
-                     <TabbedBody selectedOrg={orgs[selectedOrgIndex]} />
+                     <TabbedBody
+                         selectedOrg={orgs[selectedOrgIndex]}
+                         searchLang={searchLang}
+                         searchText={searchText}
+                     />
                 </Box>
             </Container>
         </ApolloProvider>
