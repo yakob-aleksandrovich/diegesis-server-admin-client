@@ -1,19 +1,14 @@
 import React from 'react';
 
+import { searchQuery } from '../lib/search';
 import TranslationsTable from "./TranslationsTable";
 import {gql, useQuery} from "@apollo/client";
 import {Box, Paper, Typography} from "@mui/material";
 
 export default function LocalTab({selectedOrg, searchLang, searchText}) {
 
-    function searchClause(searchLang, searchText) {
-        return `(
-        ${searchLang.trim().length > 0 ? `withLanguageCode: "${searchLang.trim()}"` : ''}
-        ${searchText.trim().length > 0 ? `withMatchingMetadata: "${searchText.trim()}"` : ''}
-        )`;
-    }
-
-    const queryString = `query localTranslations {
+    const queryString = searchQuery(
+        `query localTranslations {
         org(name: "%org%") {
             id: name
             localTranslations%searchClause% {
@@ -26,17 +21,15 @@ export default function LocalTab({selectedOrg, searchLang, searchText}) {
                 hasVrs
             }
         }
-    }`.replace('%org%', selectedOrg)
-        .replace(
-            '%searchClause%',
-            searchText.trim().length > 0 || searchLang.trim().length > 0 ?
-                searchClause(searchLang, searchText) :
-                ''
-        );
+    }`,
+        selectedOrg,
+        searchLang,
+        searchText
+    );
 
     const {loading, error, data} = useQuery(
         gql`${queryString}`,
-        {pollInterval: 5000}
+        {pollInterval: 2000}
     );
 
     const columns = [

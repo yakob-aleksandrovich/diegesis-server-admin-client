@@ -9,15 +9,17 @@ import {Box, Button, Paper, Typography} from '@mui/material';
 import {Download} from '@mui/icons-material';
 
 import TranslationsTable from "./TranslationsTable";
+import { searchQuery } from '../lib/search';
 
-export default function RemoteTab({selectedOrg}) {
+export default function RemoteTab({selectedOrg, searchLang, searchText}) {
 
     const client = useApolloClient();
 
-    const queryString = `query catalogEntries {
+    const queryString = searchQuery(
+        `query catalogEntries {
             org(name: "%org%") {
                 id: name
-                catalogEntries {
+                catalogEntries%searchClause% {
                     id
                     languageCode
                     title
@@ -26,11 +28,14 @@ export default function RemoteTab({selectedOrg}) {
 
                 }
             }
-        }`.replace('%org%', selectedOrg);
+        }`,
+        selectedOrg,
+        searchLang,
+        searchText);
 
     const {loading, error, data} = useQuery(
         gql`${queryString}`,
-        {pollInterval: 9000}
+        {pollInterval: 2000}
     );
 
     const columns = [
@@ -102,7 +107,7 @@ export default function RemoteTab({selectedOrg}) {
         return <Paper sx={{width: '100%', overflow: 'hidden'}}>
             <Box>
                 <Typography variant="h3">GraphQL Error</Typography>
-                <Typography>{error}</Typography>
+                <Typography>{JSON.stringify(error)}</Typography>
             </Box>
         </Paper>
     }
