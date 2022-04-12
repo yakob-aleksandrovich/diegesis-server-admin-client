@@ -10,6 +10,7 @@ import {Download} from '@mui/icons-material';
 
 import TranslationsTable from "./TranslationsTable";
 import { searchQuery } from '../lib/search';
+import { fetchTranslation } from '../lib/tableCallbacks';
 
 export default function RemoteTab({selectedOrg, searchLang, searchText}) {
 
@@ -19,6 +20,8 @@ export default function RemoteTab({selectedOrg, searchLang, searchText}) {
         `query catalogEntries {
             org(name: "%org%") {
                 id: name
+                fullName,
+                contentType
                 catalogEntries%searchClause% {
                     id
                     languageCode
@@ -61,20 +64,7 @@ export default function RemoteTab({selectedOrg, searchLang, searchText}) {
         },
     ];
 
-    async function fetchTranslation(org, transId) {
-        const mutationString = `mutation Fetch {
-                fetch%contentType%(
-                  org: "%org%",
-                  translationId: "%transId%"
-                )
-        }`.replace('%org%', org)
-            .replace('%transId%', transId)
-            .replace('%contentType%', org === 'DBL' ? 'Usx' : 'Usfm');
-        const result = await client.mutate({mutation: gql`${mutationString}`});
-        console.log(result.data);
-    }
-
-    function createData(catalogEntry) {
+    function createData(catalogEntry, contentType) {
         return {
             id: catalogEntry.id,
             languageCode: catalogEntry.languageCode,
@@ -84,8 +74,10 @@ export default function RemoteTab({selectedOrg, searchLang, searchText}) {
                 disabled={catalogEntry.hasLocalUsfm || catalogEntry.hasLocalUsx}
                 onClick={
                     () => fetchTranslation(
+                        client,
                         selectedOrg,
-                        catalogEntry.id
+                        catalogEntry.id,
+                        contentType
                     )
                 }
             >
@@ -109,6 +101,7 @@ export default function RemoteTab({selectedOrg, searchLang, searchText}) {
             </Box>
         </Paper>
     }
-    const rows = data.org.catalogEntries.map(ce => createData(ce));
+    const orgContentType = data?.org.contentType;
+    const rows = data.org.catalogEntries.map(ce => createData(ce, orgContentType));
     return <TranslationsTable columns={columns} rows={rows}/>
 }
