@@ -61,6 +61,7 @@ export default function TranslationsTable({columns, rows})
                 </Table>
             </TableContainer>
             <TablePagination
+                siez="small"
                 rowsPerPageOptions={[10, 25, 100]}
                 component="div"
                 count={rows.length}

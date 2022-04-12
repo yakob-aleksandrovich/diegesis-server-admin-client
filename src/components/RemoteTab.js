@@ -1,4 +1,4 @@
-import React, {useState} from 'react';
+import React from 'react';
 import {
     gql,
     useQuery,
@@ -61,7 +61,7 @@ export default function RemoteTab({selectedOrg, searchLang, searchText}) {
         },
     ];
 
-    async function fetchTranslation(org, transId, hasUsfm, hasUsx) {
+    async function fetchTranslation(org, transId) {
         const mutationString = `mutation Fetch {
                 fetch%contentType%(
                   org: "%org%",
@@ -85,9 +85,7 @@ export default function RemoteTab({selectedOrg, searchLang, searchText}) {
                 onClick={
                     () => fetchTranslation(
                         selectedOrg,
-                        catalogEntry.id,
-                        catalogEntry.hasLocalUsfm,
-                        catalogEntry.hasLocalUsx
+                        catalogEntry.id
                     )
                 }
             >
