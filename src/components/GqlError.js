@@ -4,9 +4,9 @@ import React from "react";
 export default function GqlError({error}) {
     return <Paper sx={{width: '100%', overflow: 'hidden'}}>
         {
-            error.message ?
+            error.message === "Failed to fetch" ?
                 <Box>
-                    <Typography variant="h5">Failed to Fetch</Typography>
+                    <Typography variant="h5">Failed to fetch</Typography>
                 </Box> :
                 <Box>
                     <Typography variant="h5">GraphQL Error</Typography>
