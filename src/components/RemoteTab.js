@@ -5,7 +5,7 @@ import {
     useApolloClient,
 } from "@apollo/client";
 
-import {Box, Button, Paper, Typography} from '@mui/material';
+import { Button } from '@mui/material';
 import {Download} from '@mui/icons-material';
 
 import TranslationsTable from "./TranslationsTable";

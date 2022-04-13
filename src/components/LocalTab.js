@@ -3,7 +3,6 @@ import React from 'react';
 import { searchQuery } from '../lib/search';
 import TranslationsTable from "./TranslationsTable";
 import {gql, useQuery} from "@apollo/client";
-import {Box, Paper, Typography} from "@mui/material";
 import GqlLoading from "./GqlLoading";
 import GqlError from "./GqlError";
 
