@@ -11,6 +11,8 @@ import {Download} from '@mui/icons-material';
 import TranslationsTable from "./TranslationsTable";
 import { searchQuery } from '../lib/search';
 import { fetchTranslation } from '../lib/tableCallbacks';
+import GqlLoading from "./GqlLoading";
+import GqlError from "./GqlError";
 
 export default function RemoteTab({selectedOrg, searchLang, searchText}) {
 
@@ -87,19 +89,10 @@ export default function RemoteTab({selectedOrg, searchLang, searchText}) {
     }
 
     if (loading) {
-        return <Paper sx={{width: '100%', overflow: 'hidden'}}>
-            <Box>
-                <Typography variant="h3">Loading</Typography>
-            </Box>
-        </Paper>
+        return <GqlLoading />
     }
     if (error) {
-        return <Paper sx={{width: '100%', overflow: 'hidden'}}>
-            <Box>
-                <Typography variant="h3">GraphQL Error</Typography>
-                <Typography>{JSON.stringify(error)}</Typography>
-            </Box>
-        </Paper>
+        return <GqlError error={error} />
     }
     const orgContentType = data?.org.contentType;
     const rows = data.org.catalogEntries.map(ce => createData(ce, orgContentType));

@@ -4,6 +4,8 @@ import { searchQuery } from '../lib/search';
 import TranslationsTable from "./TranslationsTable";
 import {gql, useQuery} from "@apollo/client";
 import {Box, Paper, Typography} from "@mui/material";
+import GqlLoading from "./GqlLoading";
+import GqlError from "./GqlError";
 
 export default function LocalTab({selectedOrg, searchLang, searchText}) {
 
@@ -18,6 +20,7 @@ export default function LocalTab({selectedOrg, searchLang, searchText}) {
                 hasUsfm
                 hasUsx
                 hasSuccinct
+                hasSuccinctError
                 hasVrs
             }
         }
@@ -59,7 +62,6 @@ export default function LocalTab({selectedOrg, searchLang, searchText}) {
             label: 'Succinct?',
             minWidth: 50,
             align: 'right',
-            format: value => value ? "yes" : "no"
         },
         {
             id: 'hasVrs',
@@ -71,31 +73,26 @@ export default function LocalTab({selectedOrg, searchLang, searchText}) {
     ];
 
     function createData(localTranslation) {
+        let succinctState = localTranslation.hasSuccinct ? 'yes' : 'no';
+        if (localTranslation.hasSuccinctError) {
+            succinctState = 'FAIL';
+        }
         return {
             id: localTranslation.id,
             languageCode: localTranslation.languageCode,
             title: localTranslation.title,
             hasUsfm: localTranslation.hasUsfm,
             hasUsx: localTranslation.hasUsx,
-            hasSuccinct: localTranslation.hasSuccinct,
+            hasSuccinct: succinctState,
             hasVrs: localTranslation.hasVrs,
         };
     }
 
     if (loading) {
-        return <Paper sx={{width: '100%', overflow: 'hidden'}}>
-            <Box>
-                <Typography variant="h3">Loading</Typography>
-            </Box>
-        </Paper>
+        return <GqlLoading />
     }
     if (error) {
-        return <Paper sx={{width: '100%', overflow: 'hidden'}}>
-            <Box>
-                <Typography variant="h3">GraphQL Error</Typography>
-                <Typography>{JSON.stringify(error)}</Typography>
-            </Box>
-        </Paper>
+        return <GqlError error={error} />
     }
     const rows = data.org.localTranslations.map(lt => createData(lt));
     return <TranslationsTable columns={columns} rows={rows}/>
