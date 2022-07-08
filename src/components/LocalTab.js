@@ -1,12 +1,16 @@
 import React from 'react';
-
 import { searchQuery } from '../lib/search';
 import TranslationsTable from "./TranslationsTable";
-import {gql, useQuery} from "@apollo/client";
+import {gql, useQuery,useApolloClient,} from "@apollo/client";
 import GqlLoading from "./GqlLoading";
 import GqlError from "./GqlError";
+import { deleteTranslation } from '../lib/tableCallbacks';
+import { Button } from '@mui/material';
+import {Delete} from '@mui/icons-material';
 
 export default function LocalTab({selectedOrg, searchLang, searchText}) {
+
+    const client = useApolloClient();
 
     const queryString = searchQuery(
         `query localTranslations {
@@ -69,6 +73,12 @@ export default function LocalTab({selectedOrg, searchLang, searchText}) {
             align: 'right',
             format: value => value ? "yes" : "no"
         },
+        {
+            id: 'actions',
+            label: 'Actions',
+            minWidth: 100,
+            align: 'right',
+        },
     ];
 
     function createData(localTranslation) {
@@ -84,6 +94,17 @@ export default function LocalTab({selectedOrg, searchLang, searchText}) {
             hasUsx: localTranslation.hasUsx,
             hasSuccinct: succinctState,
             hasVrs: localTranslation.hasVrs,
+            actions: <Button
+                onClick={
+                    () => deleteTranslation(
+                        client,
+                        selectedOrg,
+                        localTranslation.id,
+                    )
+                }
+            >
+                <Delete/>
+            </Button>
         };
     }
 
