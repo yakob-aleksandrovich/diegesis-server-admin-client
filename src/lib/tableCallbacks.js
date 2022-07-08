@@ -11,5 +11,14 @@ async function fetchTranslation(client, org, transId, contentType) {
         .replace('%contentType%', contentType === "USFM" ? 'Usfm' : 'Usx');
     client.mutate({mutation: gql`${mutationString}`});
 }
-
-export { fetchTranslation };
+async function deleteTranslation(client, org, transId){
+  const mutationString = `mutation DeleteLocalTranslation {
+    deleteLocalTranslation(
+      org: "%org%",
+      translationId: "%transId%"
+    )
+}`.replace('%org%', org)
+.replace('%transId%', transId)
+client.mutate({mutation: gql`${mutationString}`});
+}
+export { fetchTranslation, deleteTranslation};
