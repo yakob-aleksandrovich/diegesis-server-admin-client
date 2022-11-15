@@ -5,7 +5,7 @@ A web client for downloading content into Diegesis Server
 This client is designed to be served by Diegesis Server.
 ### Building
 ```
-npm install
+npm install --legacy-peer-deps
 npm run build 
 ```
 ### Configuring Diegesis Server
